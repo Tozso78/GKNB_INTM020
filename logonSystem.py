@@ -1,5 +1,6 @@
 import sys
 from faceCapture import capture
+from faceRecognition import recognize
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QTextEdit, QAction, QApplication
 from PyQt5.QtGui import QIcon
 
@@ -11,8 +12,7 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def faceRecognition(self):
-        QMessageBox.information(self, 'Message',
-                                "FaceRecognition", QMessageBox.Ok)
+        recognize()
 
     def faceTraining(self):
         name, ok = QInputDialog.getText(self,"Név megadása", "Név")
