@@ -5,16 +5,19 @@ from gpiozero import LED
 
 def recognize():
     names = []
+    loggedIn = []
 
     # Az eltárolt arcok nevének kiolvasása faceid sorrendben, a kiiratáshoz
     conn = sqlite3.connect('database/logonSystem.db')
     cur = conn.cursor()
+    cur.execute('CREATE TABLE IF NOT EXISTS userLogon (name text, logonDate text)')
+    conn.commit()
     cur.execute('SELECT name FROM userData order by faceid')
     rows = cur.fetchall()
-    conn.close()
 
     for row in rows:
         names.append(row[0])
+        loggedIn.append(0)
 
     led_red = LED(16)
     led_green = LED(20)
@@ -49,6 +52,11 @@ def recognize():
                 led_green.on()
                 name = names[face_id]
                 confidence = "  {0}%".format(round(100 - confidence))
+                if loggedIn[face_id] == 0:
+                    print(name)
+                    loggedIn[face_id] = 1;
+                    cur.execute("INSERT INTO userLogon VALUES ('" + str(name) + "', datetime('now'))")
+                    conn.commit()
             else:
                 led_green.off()
                 led_red.on()
@@ -66,3 +74,4 @@ def recognize():
     cv2.destroyAllWindows()
     led_red.off()
     led_green.off()
+    conn.close()
