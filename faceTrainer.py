@@ -1,6 +1,7 @@
 import cv2
 import numpy
 import os
+import sqlite3
 from PIL import Image
 
 
@@ -17,6 +18,9 @@ def train():
     # Az arcokat tartalmazó mappa
     face_images = os.path.join(os.getcwd(), "face-images")
 
+    conn = sqlite3.connect('database/logonSystem.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS userData (faceid int, name text)''')
     # Végig nézünk minden mappát és végignézzük a képeket
     for root, dirs, files in os.walk(face_images):
         for file in files:
@@ -36,9 +40,11 @@ def train():
                     # arcfelismerés
                     faces = cascade.detectMultiScale(image, scaleFactor=1.2, minNeighbors=5)
                     for (x, y, w, h) in faces:
-                        print(str(face_id) + " : " + person_name )
+                        print(str(face_id) + " : " + person_name)
+                        c.execute("INSERT INTO userData VALUES (" + str(face_id) + ", '" + person_name + "')")
                         roi = image[y:y + h, x:x + w]
                         region_of_interest_array.append(roi)
                         face_id_array.append(face_id)
                         recognizer.train(region_of_interest_array, numpy.array(face_id_array))
                         recognizer.save("face-trainner.yml")
+    conn.close()

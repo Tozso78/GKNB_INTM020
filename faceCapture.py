@@ -2,9 +2,10 @@ import cv2
 import os
 from faceTrainer import train
 
+
 def capture(name):
     camera = cv2.VideoCapture(0)
-    #cv2.namedWindow("Arc mentés")
+
     if not os.path.exists("face-images/" + name):
         os.makedirs("face-images/" + name)
 
