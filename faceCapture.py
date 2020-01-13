@@ -13,14 +13,14 @@ def capture(name):
 
     while True:
         ret, frame = camera.read()
-        cv2.imshow("Arc mentés", frame)
+        cv2.imshow("Arc mentes", frame)
         if not ret:
             break
-        k = cv2.waitKey(1)
+        key = cv2.waitKey(1) & 0xff
 
-        if k % 256 == 27:
+        if key == 27:
             break
-        elif k % 256 == 32:
+        elif key == 32:
 
             img_name = "face-images/" + name + "/{}.png".format(image_counter)
             print(img_name)
