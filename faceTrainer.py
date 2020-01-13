@@ -19,8 +19,11 @@ def train():
     face_images = os.path.join(os.getcwd(), "face-images")
 
     conn = sqlite3.connect('database/logonSystem.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS userData (faceid int, name text)''')
+    cur = conn.cursor()
+    cur.execute('CREATE TABLE IF NOT EXISTS userData (faceid int, name text)')
+    cur.execute('DELETE FROM userData')
+    conn.commit()
+
     # Végig nézünk minden mappát és végignézzük a képeket
     for root, dirs, files in os.walk(face_images):
         for file in files:
@@ -38,13 +41,14 @@ def train():
                     image = numpy.array(cropped_image, "uint8")
 
                     # arcfelismerés
-                    faces = cascade.detectMultiScale(image, scaleFactor=1.2, minNeighbors=5)
+                    faces = cascade.detectMultiScale(image, scaleFactor=1.5, minNeighbors=5)
                     for (x, y, w, h) in faces:
                         print(str(face_id) + " : " + person_name)
-                        c.execute("INSERT INTO userData VALUES (" + str(face_id) + ", '" + person_name + "')")
+                        cur.execute("INSERT INTO userData VALUES (" + str(face_id) + ", '" + person_name + "')")
                         roi = image[y:y + h, x:x + w]
                         region_of_interest_array.append(roi)
                         face_id_array.append(face_id)
                         recognizer.train(region_of_interest_array, numpy.array(face_id_array))
                         recognizer.save("face-trainner.yml")
+                    conn.commit()
     conn.close()
