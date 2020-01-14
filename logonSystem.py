@@ -1,6 +1,7 @@
 import sys
 from faceCapture import capture
 from faceRecognition import recognize
+import report
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QTextEdit, QAction, QApplication
 from PyQt5.QtGui import QIcon
 
@@ -15,13 +16,12 @@ class MainWindow(QMainWindow):
         recognize()
 
     def faceTraining(self):
-        name, ok = QInputDialog.getText(self,"Név megadása", "Név")
+        name, ok = QInputDialog.getText(self, "Név megadása", "Név")
         if ok:
             capture(name)
 
     def report(self):
-        QMessageBox.information(self, 'Message',
-                                "Report", QMessageBox.Ok)
+        self.report = report.Report()
 
     def initUI(self):
         text_edit = QTextEdit()
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         toolbar.addAction(report_act)
         toolbar.addAction(quit_act)
 
-        self.setGeometry(300, 300, 640, 480)
+        self.setGeometry(300, 300, 800, 600)
         self.setWindowTitle('Beléptető rendszer')
         self.show()
 
