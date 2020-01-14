@@ -1,6 +1,38 @@
+import sys
+
 import cv2
 import sqlite3
 from gpiozero import LED
+import smtplib
+
+
+def sendemail(name):
+    email_user = 'zsolt.toth@tyrsoft.hu'
+    email_password = 'Betti1979'
+
+    sent_from = email_user
+    to = ['hu@hu.hu']
+    subject = 'Sikeres belepes'
+    body = 'Sikeres belepes:' + name
+    email_text = """\
+    From: %s
+    To: %s
+    Subject: %s
+
+    %s
+    """ % (sent_from, ", ".join(to), subject, body)
+
+    try:
+        server = smtplib.SMTP('smtpserver', 25000)
+        server.ehlo()
+        server.login(email_user, email_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+
+        print
+        'Email sent!'
+    except:
+        print('Hiba történt:' , sys.exc_info()[0])
 
 
 def recognize():
@@ -57,6 +89,7 @@ def recognize():
                     loggedIn[face_id] = 1;
                     cur.execute("INSERT INTO userLogon VALUES ('" + str(name) + "', datetime('now'))")
                     conn.commit()
+                    sendemail(name)
             else:
                 led_green.off()
                 led_red.on()
