@@ -7,8 +7,8 @@ import smtplib
 
 
 def sendemail(name):
-    email_user = 'zsolt.toth@tyrsoft.hu'
-    email_password = 'Betti1979'
+    email_user = ''
+    email_password = ''
 
     sent_from = email_user
     to = ['hu@hu.hu']
@@ -99,7 +99,7 @@ def recognize():
             cv2.putText(img, str(name), (x + 5, y - 5), font, 1, (255, 255, 255), 2)
             # cv2.putText(img, str(confidence), (x + 5, y + h - 5), font, 1, (255, 255, 0), 1)
 
-        cv2.imshow('camera', img)
+        cv2.imshow('Arc felismeres', img)
         key = cv2.waitKey(10) & 0xff  # Press 'ESC' for exiting video
         if key == 27:
             break
