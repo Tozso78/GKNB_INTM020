@@ -32,7 +32,7 @@ def sendemail(name):
         print
         'Email sent!'
     except:
-        print('Hiba történt:' , sys.exc_info()[0])
+        print('Hiba történt:', sys.exc_info()[0])
 
 
 def recognize():
@@ -61,8 +61,8 @@ def recognize():
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     camera = cv2.VideoCapture(0)
-    camera.set(3, 640)
-    camera.set(4, 480)
+    # camera.set(3, 640)
+    # camera.set(4, 480)
 
     # Arcfelismerés
     while True:
@@ -79,14 +79,14 @@ def recognize():
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             face_id, confidence = recognizer.predict(gray[y:y + h, x:x + w])
 
-            if confidence < 100:
+            if round(100 - confidence) > 40:
                 led_red.off()
                 led_green.on()
-                name = names[face_id]
+                name = names[face_id - 1]
                 confidence = "  {0}%".format(round(100 - confidence))
-                if loggedIn[face_id] == 0:
+                if loggedIn[face_id - 1] == 0:
                     print(name)
-                    loggedIn[face_id] = 1;
+                    loggedIn[face_id - 1] = 1;
                     cur.execute("INSERT INTO userLogon VALUES ('" + str(name) + "', datetime('now'))")
                     conn.commit()
                     sendemail(name)
@@ -97,7 +97,7 @@ def recognize():
                 confidence = "  {0}%".format(round(100 - confidence))
 
             cv2.putText(img, str(name), (x + 5, y - 5), font, 1, (255, 255, 255), 2)
-            # cv2.putText(img, str(confidence), (x + 5, y + h - 5), font, 1, (255, 255, 0), 1)
+            cv2.putText(img, str(confidence), (x + 5, y + h - 5), font, 1, (255, 255, 0), 1)
 
         cv2.imshow('Arc felismeres', img)
         key = cv2.waitKey(10) & 0xff  # Press 'ESC' for exiting video

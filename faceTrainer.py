@@ -9,7 +9,7 @@ def train():
     cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
     recognizer = cv2.face.LBPHFaceRecognizer_create()
 
-    face_id = -1
+    face_id = 0
     prev_person_name = ""
 
     face_id_array = []
@@ -34,7 +34,8 @@ def train():
                 if prev_person_name != person_name:
                     face_id = face_id + 1
                     prev_person_name = person_name
-
+                    print(face_id)
+                    print(person_name)
                     gray_image = Image.open(path).convert("L")
 
                     cropped_image = gray_image.resize((550, 550), Image.ANTIALIAS)
